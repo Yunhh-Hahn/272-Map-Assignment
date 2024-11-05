@@ -1,0 +1,49 @@
+body, html {
+  margin: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+#app {
+  height: 100vh;
+}
+
+#left-panel {
+  padding: 15px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  height: 100vh;
+}
+
+#map {
+  height: 100vh;
+}
+
+#emergency-form {
+  margin-bottom: 20px;
+}
+
+#suggestions {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+}
+
+.list-group-item {
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  background-color: #f1f1f1;
+}
+
+#emergency-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#emergency-list .active {
+  background-color: #007bff;
+  color: white;
+}
