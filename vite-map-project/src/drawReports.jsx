@@ -14,12 +14,20 @@ const focusedIcon = new Icon({
     iconSize: [38, 38]
   })
 
+/**
+ * Draws a collection of reports on the map as markers with popups.
+ * If a report.id matches the focusedID, the marker is highlighted.
+ * 
+ * @param {object[]} reportArray - An array of report objects, each containing a geocode and an id. Ideally, fetch this array from the dom storage API
+ * @param {number} focusedID - The id of the report to be highlighted.
+ * @returns {JSX.Element[]}
+ */
 const drawReports = (reportArray, focusedID) => {
     return (
-      reportArray.map((report, index) => (
-        <Marker position={report.geocode} icon={report.id === focusedID ? focusedIcon:defaultIcon} key={index}>
+      reportArray.map((report) => (
+        <Marker position={report.geocode} icon={report.id === focusedID ? focusedIcon:defaultIcon} key={report.id}>
           <Popup>
-            {/*add in form component here*/}
+            {/*TODO: add in the report details, format it*/}
             Hello world
           </Popup>
         </Marker>

@@ -28,7 +28,7 @@ function AddReport() {
       setMarkerPoint(markerPoint);
 
       // Immediately open a popup with a message at the location of the marker.
-      // Either include a button to take user to the form or directly open the form in the popup
+      // TODO: Either include a button to take user to the form or directly open the form in the popup
       map.openPopup("<h1>hello world</h1>", markerPoint);
     }
   });
