@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, useMapEvents, useMap, Marker, Popup} from "rea
 import { useState } from "react";
 import { Icon } from "leaflet";
 import './App.css'
-import drawMarkers from "./Marker.jsx";
+import drawReports from "./drawReports.jsx";
 
 function MyComponent() {
   const map = useMap();
