@@ -1,14 +1,16 @@
 import { Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet"; 
+import pinFocus from "./assets/pin-focus.png";
+import pinDefault from "./assets/pin.png";
  
 
 const defaultIcon = new Icon({
-    iconUrl: "assets/pin.png",
+    iconUrl: pinDefault,
     iconSize: [38, 38]
   })
 
 const focusedIcon = new Icon({
-    iconUrl: "assets/pin-focus.png",
+    iconUrl: pinFocus,
     iconSize: [38, 38]
   })
 
