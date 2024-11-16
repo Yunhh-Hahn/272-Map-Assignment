@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, useMapEvents, useMap, Marker, Popup} from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvents, useMap, Marker} from "react-leaflet";
 import { useState } from "react";
 import { Icon } from "leaflet";
 import './App.css'
@@ -10,9 +10,18 @@ const focusedIcon = new Icon({
   iconSize: [38, 38]
 })
 
-// This is a React component that uses react-leaflet to handle
-// a user's click on the map. It adds a marker and opens a popup in the map at the
-// point of the click.
+
+/**
+ * A React component that listens for a click event on the map. When a click
+ * is detected, it converts the pixel coordinates of the click to latitude and
+ * longitude coordinates and sets the markerPoint state to those coordinates.
+ * Immediately after, it opens a popup with a message at the location of the
+ * marker. Finally, it renders either nothing (if there is no marker) or a
+ * marker at the location of the marker.
+ * 
+ * @returns {JSX.Element} A React component containing either nothing or a
+ *                        marker.
+ */
 function AddReport() {
   const map = useMap(); // This hook gets the map object from the MapContainer
   const [markerPoint, setMarkerPoint] = useState(null); 

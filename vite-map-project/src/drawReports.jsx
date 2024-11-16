@@ -27,7 +27,7 @@ const drawReports = (reportArray, focusedID) => {
       reportArray.map((report) => (
         <Marker position={report.geocode} icon={report.id === focusedID ? focusedIcon:defaultIcon} key={report.id}>
           <Popup>
-            {/*TODO: add in the report details, format it*/}
+            {/*TODO: add in the report details, format it. Along with a button to modify the report*/}
             Hello world
           </Popup>
         </Marker>
