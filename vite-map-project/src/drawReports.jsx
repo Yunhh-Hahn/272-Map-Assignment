@@ -4,11 +4,7 @@ import pinFocus from "./assets/pin-focus.png";
 import pinDefault from "./assets/pin.png";
 import proptypes from "prop-types";
 
-DrawReports.propTypes = {
-  reportArray: proptypes.array,
-  focusedID: proptypes.number,
-  onClick: proptypes.func,
-};
+
 
 const defaultIcon = new Icon({
   iconUrl: pinDefault,
@@ -51,6 +47,12 @@ const DrawReports = ({ reportArray, focusedID, onClick }) => {
         ))}
     </>
   );
+};
+
+DrawReports.propTypes = {
+  reportArray: proptypes.array,
+  focusedID: proptypes.number,
+  onClick: proptypes.func,
 };
 
 export default DrawReports;
