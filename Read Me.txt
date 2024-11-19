@@ -1,0 +1,22 @@
+Things left:
+
+
+Location: A specific address or place name, optionally including longitude and latitude, pinpointing the incident's 
+site.  (Include)
+
+Add a list that shows all emergencies. The list should be sortable based on Location, Type, Time Reported, and Status. The list should also have a "More Info" hyperlink for each emergency to show the comments 
+
+As the map is zoomed in or out, the list changes to show only the emergencies currently on the map.
+
+From the list, you can modify or delete reports that shall be available with a valid passcode that the system shall prompt the user to enter for those operations. 
+
+The form styling and the table styling
+
+
+
+Steps to run:
+
+1) Download the whole thing. (Use same file path as Nathan's)
+2) Open terminal - npm install
+
+3) npm run dev

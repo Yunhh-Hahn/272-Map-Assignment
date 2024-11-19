@@ -1,77 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Emergency Reporting System</title>
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet/dist/leaflet.css"
-  />
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css" />
-  <!-- Optional: Include Bootstrap CSS for styling -->
-  <link
-    rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-  />
-</head>
-<body>
-  <div id="app" class="container-fluid">
-    <div class="row no-gutters">
-      <!-- Left Panel -->
-      <div id="left-panel" class="col-md-4">
-        <!-- Emergency Form -->
-        <form id="emergency-form">
-          <h3>Report an Emergency</h3>
-          <div class="form-group">
-            <input type="text" id="reporter-name" class="form-control" placeholder="Your Name" required />
-          </div>
-          <div class="form-group">
-            <input type="tel" id="reporter-phone" class="form-control" placeholder="Phone Number" required />
-          </div>
-          <div class="form-group">
-            <select id="emergency-type" class="form-control" required>
-              <option value="">Select Emergency Type</option>
-              <option value="Fire">Fire</option>
-              <option value="Shooting">Shooting</option>
-              <option value="Vehicle Accident">Vehicle Accident</option>
-              <option value="Medical">Medical</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <input type="text" id="location" class="form-control" placeholder="Location" autocomplete="off" required />
-            <!-- Address Suggestions Dropdown -->
-            <div id="suggestions" class="list-group"></div>
-          </div>
-          <div class="form-group">
-            <input type="url" id="picture-link" class="form-control" placeholder="Picture URL" />
-          </div>
-          <div class="form-group">
-            <textarea id="comments" class="form-control" placeholder="Additional Comments"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Report</button>
-        </form>
-        <!-- Emergency List -->
-        <h4 class="mt-4">Emergency Reports</h4>
-        <div id="emergency-list" class="list-group"></div>
-        <!-- Clear All Reports Button -->
-        <button id="clear-reports" class="btn btn-danger mt-3">Clear All Reports</button>
-      </div>
-      <!-- Map -->
-      <div id="map" class="col-md-8"></div>
-    </div>
-  </div>
-
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet/dist/leaflet.js"
-  ></script>
-  <!-- CryptoJS for MD5 hashing -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
-  ></script>
-  <!-- Main JS -->
-  <script src="main.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin="">
+    </script>
+    <title>Map Project</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
