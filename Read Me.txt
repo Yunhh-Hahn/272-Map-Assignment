@@ -17,10 +17,6 @@ The form styling and the table styling
 Steps to run:
 
 1) Download the whole thing. (Use same file path as Nathan's)
-2) Open terminal and -
-npm install md5
+2) Open terminal - npm install
 
-3) Then
-npm install md5 react-leaflet leaflet prop-types
-
-4) npm run dev
+3) npm run dev
