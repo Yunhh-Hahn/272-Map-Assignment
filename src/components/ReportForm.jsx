@@ -40,7 +40,7 @@ function ReportForm({ markerPoint, displayName, onSubmit, onClose }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2>Submit Emergency Report</h2>
+        <h2 >Submit Emergency Report</h2>
         <form onSubmit={handleSubmit}>
           <label>
             Your Name*:
@@ -114,10 +114,12 @@ function ReportForm({ markerPoint, displayName, onSubmit, onClose }) {
             />
           </label>
           <p>Fields marked with * are required.</p>
-          <button type="submit">Submit Report</button>
-          <button type="button" onClick={onClose}>
-            Cancel
-          </button>
+          <div id="buttons">
+            <button type="submit">Submit Report</button>
+            <button type="button" onClick={onClose}>
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

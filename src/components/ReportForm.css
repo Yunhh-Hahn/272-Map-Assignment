@@ -1,25 +1,95 @@
-/* ReportForm.css */
-
+/* Modal overlay styling */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-  }
-  
-  .error {
-    color: red;
-    font-size: 0.8em;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content styling */
+.modal-content {
+  background-color: #f9f9f9; /* Light background for contrast */
+  padding: 30px;
+  border-radius: 10px; /* Smooth edges */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+  width: 90%;
+  max-width: 500px; /* Responsive sizing */
+  max-height: 90vh; /* Prevent exceeding the viewport height */
+   overflow-y: auto; /* Add vertical scrolling if necessary */
+}
+
+/* Form heading styling */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Form label styling */
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #555;
+}
+
+/* Input, textarea, and select fields styling */
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+/* Error message styling */
+.error {
+  color: red;
+  font-size: 0.9em;
+  margin-top: -15px;
+  margin-bottom: 10px;
+}
+
+/* Styling for the buttons container */
+#buttons {
+  display: flex; /* Flexbox layout for side-by-side alignment */
+  justify-content: space-between; /* Space between buttons */
+  margin-top: 20px; /* Add some space above the buttons */
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Button styling */
+button {
+  flex: 1; /* Equal width for buttons */
+  padding: 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 5px; /* Add spacing between buttons */
+}
+
+/* Submit button styling */
+button[type="submit"] {
+  background-color: #28a745; /* Green */
+  color: white;
+}
+
+/* Cancel button styling */
+button[type="button"] {
+  background-color: #dc3545; /* Red */
+  color: white;
+}
+
