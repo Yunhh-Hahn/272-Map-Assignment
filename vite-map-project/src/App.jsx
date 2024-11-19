@@ -11,10 +11,6 @@ const focusedIcon = new Icon({
   iconSize: [38, 38]
 })
 
-AddReport.propTypes = {
-  sendMarker: propTypes.func,
-};
-
 /**
  * A React component that listens for a click event on the map. When a click
  * is detected, it converts the pixel coordinates of the click to latitude and
@@ -25,11 +21,11 @@ AddReport.propTypes = {
  * 
  * @returns {JSX.Element} A React component containing either nothing or a
  *                        marker.
- */
+*/
 function AddReport({ sendMarker }) {
   const map = useMap(); // This hook gets the map object from the MapContainer
   const [markerPoint, setMarkerPoint] = useState(null);
-
+  
   // This hook is a react-leaflet hook that listens for an event (in this case,
   // a click).
   useMapEvents({
@@ -45,8 +41,7 @@ function AddReport({ sendMarker }) {
       map.openPopup("<h1>hello world</h1>", markerPoint);
     },
   });
-
-
+  
   // The component renders either nothing (if there is no marker) or a
   // marker at the location of the marker.
   return (
@@ -57,6 +52,10 @@ function AddReport({ sendMarker }) {
     </>
   );
 }
+
+AddReport.propTypes = {
+  sendMarker: propTypes.func,
+};
 
 function App() {
   

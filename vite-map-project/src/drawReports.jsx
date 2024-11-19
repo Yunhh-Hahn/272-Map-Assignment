@@ -4,8 +4,6 @@ import pinFocus from "./assets/pin-focus.png";
 import pinDefault from "./assets/pin.png";
 import proptypes from "prop-types";
 
-
-
 const defaultIcon = new Icon({
   iconUrl: pinDefault,
   iconSize: [38, 38],
