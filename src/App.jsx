@@ -8,6 +8,8 @@ import ReportForm from "./components/ReportForm.jsx";
 import AddReport from "./components/AddReport.jsx";
 import ReportList from "./components/ReportList.jsx";
 import md5 from "md5";
+import ReportTable from "./components/ReportTable.jsx";
+
 
 // Passcode here--------------------------------------------------
 const PASSCODE_HASH = md5("MuMeLeLe");
@@ -90,38 +92,37 @@ function App() {
 
   return (
     <>
-      {/* Map Container */}
-      <MapContainer
-        center={[49.259065, -122.91798]}
-        zoom={13}
-        className="h-screen w-screen z-0"
-        maxBounds={[
-          [48.2, -121.8],
-          [50.499998, -125.6833],
-        ]}
-        minZoom={10}
-        maxZoom={18}
-        whenCreated={(map) => setMapInstance(map)} // Store map instance
-      >
-        {/* Tile Layer */}
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">
-            OpenStreetMap
-          </a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {/* Component to handle map clicks */}
-        <AddReport onMapClick={handleMapClick} />
-        {/* Component to draw reports on the map */}
-        <DrawReports
-          reportArray={reports}
-          focusedID={focusedID}
-          onClick={(id) => setFocusedID(id)}
-          onResolve={handleResolve}
-        />
-      </MapContainer>
-
-      {/* Conditionally render the Report Form */}
+      <div id="map">
+  <MapContainer
+    center={[49.259065, -122.91798]}
+    zoom={13}
+    className="h-full w-full"
+    maxBounds={[
+      [48.2, -121.8],
+      [50.499998, -125.6833],
+    ]}
+    minZoom={10}
+    maxZoom={18}
+    whenCreated={(map) => {
+      console.log("Map created with:", map);
+      setMapInstance(map);
+    }}
+  >
+    <TileLayer
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">
+        OpenStreetMap
+      </a> contributors'
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    />
+    <AddReport onMapClick={handleMapClick} />
+    <DrawReports
+      reportArray={reports}
+      focusedID={focusedID}
+      onClick={(id) => setFocusedID(id)}
+      onResolve={handleResolve}
+    />
+  </MapContainer>
+</div>
       {showForm && (
         <ReportForm
           markerPoint={tempMarkerPoint}
@@ -134,7 +135,6 @@ function App() {
         />
       )}
 
-      {/* Conditionally render the Report List */}
       {mapInstance && (
         <ReportList
           reports={reports}
@@ -143,10 +143,17 @@ function App() {
         />
       )}
 
-      {/* Button to clear all reports (for testing purposes) */}
+      {/* 새로 추가된 테이블 컴포넌트 */}
+      <ReportTable
+        reports={reports}
+        onReportSelect={(id) => setFocusedID(id)}
+        onResolve={handleResolve}
+      />
+
       <button className="z-[10000] fixed p-2" onClick={clearReports}>
         Clear Reports
       </button>
+
     </>
   );
 }
