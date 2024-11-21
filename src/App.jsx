@@ -1,21 +1,21 @@
 // App.jsx
 
-import { MapContainer, TileLayer } from 'react-leaflet';
-import { useState, useEffect } from 'react';
-import './App.css';
-import DrawReports from './components/DrawReports.jsx';
-import ReportForm from './components/ReportForm.jsx';
-import AddReport from './components/AddReport.jsx';
-import ReportList from './components/ReportList.jsx';
-import md5 from 'md5';
+import { MapContainer, TileLayer } from "react-leaflet";
+import { useState, useEffect } from "react";
+import "./App.css";
+import DrawReports from "./components/DrawReports.jsx";
+import ReportForm from "./components/ReportForm.jsx";
+import AddReport from "./components/AddReport.jsx";
+import ReportList from "./components/ReportList.jsx";
+import md5 from "md5";
 
 // Passcode here--------------------------------------------------
-const PASSCODE_HASH = md5('MuMeLeLe');
+const PASSCODE_HASH = md5("MuMeLeLe");
 
 function App() {
   // State to store all reports, initialized from localStorage
   const [reports, setReports] = useState(() => {
-    const savedReports = localStorage.getItem('reports');
+    const savedReports = localStorage.getItem("reports");
     return savedReports ? JSON.parse(savedReports) : [];
   });
 
@@ -27,20 +27,20 @@ function App() {
 
   // State to temporarily store the marker point and address name where the user clicked
   const [tempMarkerPoint, setTempMarkerPoint] = useState(null);
-  const [tempDisplayName, setTempDisplayName] = useState('');
+  const [tempAddress, setTempAddress] = useState({});
 
   // State to store the map instance for future reference
   const [mapInstance, setMapInstance] = useState(null);
 
   // Effect to save reports to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('reports', JSON.stringify(reports));
+    localStorage.setItem("reports", JSON.stringify(reports));
   }, [reports]);
 
   // Function to handle clicks on the map, and fetch address, and display the report form
-  const handleMapClick = (markerPoint, displayName) => {
+  const handleMapClick = (markerPoint, data) => {
     setTempMarkerPoint(markerPoint);
-    setTempDisplayName(displayName);
+    setTempAddress(data);
     setShowForm(true);
   };
 
@@ -60,28 +60,26 @@ function App() {
       pictureUrl: formData.pictureUrl,
       comments: formData.comments,
       timestamp: new Date().toISOString(),
-      status: 'OPEN',
+      status: "OPEN",
     };
     setReports((prevReports) => [...prevReports, newReport]);
     setFocusedID(newReport.id);
     setTempMarkerPoint(null);
     setShowForm(false);
-
-    
   };
 
   // Function to handle resolving a report with passcode verification
   const handleResolve = (reportId) => {
-    const userPasscode = prompt('Enter passcode to resolve this report:');
+    const userPasscode = prompt("Enter passcode to resolve this report:");
     if (md5(userPasscode) === PASSCODE_HASH) {
       setReports((prevReports) =>
         prevReports.map((report) =>
-          report.id === reportId ? { ...report, status: 'RESOLVED' } : report
+          report.id === reportId ? { ...report, status: "RESOLVED" } : report
         )
       );
-      alert('Report status updated to RESOLVED.');
+      alert("Report status updated to RESOLVED.");
     } else {
-      alert('Incorrect passcode.');
+      alert("Incorrect passcode.");
     }
   };
 
@@ -128,7 +126,7 @@ function App() {
         <ReportForm
           markerPoint={tempMarkerPoint}
           onSubmit={handleFormSubmit}
-          displayName={tempDisplayName}
+          tempAddress={tempAddress}
           onClose={() => {
             setShowForm(false);
             setTempMarkerPoint(null);

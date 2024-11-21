@@ -3,13 +3,38 @@ import './ReportForm.css';
 import { useState } from 'react';
 import propTypes from 'prop-types';
 
-function ReportForm({ markerPoint, displayName, onSubmit, onClose }) {
+function ReportForm({ tempAddress, onSubmit, onClose }) {
+  // temp.display_name is a preformatted string, we need to extract the address name from it
+  // Priority -> place name -> building num -> street name -> city
+  let lowerBound = 0;
+  let higherBound = 2;
+  let placeName = tempAddress.name;
+  
+  if (tempAddress.name !== "") {
+    if (tempAddress.addresstype === "road") {
+      lowerBound = 0;
+      higherBound = 3;
+      placeName = "";
+    } else {
+      lowerBound = 1;
+      higherBound = 4;
+    }
+  }
+  // Extract the address name from the response data, data.display_name is a preformatted string, faster to split preformatted string then format string ourselves via data.address
+  // Split the string by commas, and join the parts we want
+  const addressName = tempAddress.display_name
+    .split(",")
+    .slice(lowerBound, higherBound)
+    .join(",");
+
+
   const [formData, setFormData] = useState({
     reporterName: "",
     reporterPhone: "",
     emergencyType: "",
-    address: displayName ? displayName : "",
-    placeName: "",
+    address: addressName ? addressName : "",
+    placeName: placeName,
+    postCode: tempAddress.address.postcode ? tempAddress.address.postcode : "",
     pictureUrl: "",
     comments: "",
   });
@@ -40,7 +65,7 @@ function ReportForm({ markerPoint, displayName, onSubmit, onClose }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2 >Submit Emergency Report</h2>
+        <h2>Submit Emergency Report</h2>
         <form onSubmit={handleSubmit}>
           <label>
             Your Name*:
@@ -97,6 +122,15 @@ function ReportForm({ markerPoint, displayName, onSubmit, onClose }) {
             />
           </label>
           <label>
+            Postal Code
+            <input
+              type="text"
+              name="placeName"
+              value={formData.postCode}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
             Picture URL:
             <input
               type="url"
@@ -127,8 +161,7 @@ function ReportForm({ markerPoint, displayName, onSubmit, onClose }) {
 }
 
 ReportForm.propTypes = {
-  markerPoint: propTypes.object,
-  displayName: propTypes.string,
+  tempAddress: propTypes.object,
   onSubmit: propTypes.func.isRequired,
   onClose: propTypes.func.isRequired,
 };
