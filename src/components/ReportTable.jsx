@@ -4,7 +4,10 @@ import propTypes from 'prop-types';
 function ReportTable({ reports, onReportSelect, onResolve }) {
   return (
     <div className="report-table">
-      <h2>All Reports</h2>
+      <h2>Visible Reports</h2>
+      {reports.length === 0 ? (
+        <p>No reportssible in the current map view.</p>
+      ) : (
       <table>
         <thead>
           <tr>
@@ -34,8 +37,9 @@ function ReportTable({ reports, onReportSelect, onResolve }) {
           ))}
         </tbody>
       </table>
+      )}
     </div>
-  );
+        );
 }
 
 ReportTable.propTypes = {

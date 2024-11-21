@@ -5,20 +5,23 @@ function ReportList({ reports, map, onReportSelect }) {
   const [visibleReports, setVisibleReports] = useState([]);
 
   useEffect(() => {
-    const updateVisibleReports = () => {
-      const bounds = map.getBounds();
-      const visible = reports.filter((report) =>
-        bounds.contains([report.geocode.lat, report.geocode.lng])
-      );
-      setVisibleReports(visible);
-    };
-
-    updateVisibleReports();
-    map.on('moveend', updateVisibleReports);
-    return () => {
-      map.off('moveend', updateVisibleReports);
-    };
-  }, [map, reports]);
+      const updateVisibleReports = () => {
+        const bounds = map.getBounds();
+        const visible = reports.filter((report) =>
+          bounds.contains([report.geocode.lat, report.geocode.lng])
+        );
+        setVisibleReports(visible);
+      };
+    
+      updateVisibleReports();
+      map.on('moveend', updateVisibleReports);
+      map.on('zoomend', updateVisibleReports); // Add this line
+      return () => {
+        map.off('moveend', updateVisibleReports);
+        map.off('zoomend', updateVisibleReports); // Add this line
+      };
+    }, [map, reports]);
+    
 
   // Function to handle sorting
   const [sortKey, setSortKey] = useState('timestamp'); // Default sort by time/date
