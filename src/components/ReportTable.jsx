@@ -43,9 +43,9 @@ function ReportTable({ reports, onReportSelect, onResolve }) {
 }
 
 ReportTable.propTypes = {
-  reports: propTypes.array.isRequired, // 보고서 데이터 배열
-  onReportSelect: propTypes.func.isRequired, // 보고서 선택 처리 함수
-  onResolve: propTypes.func.isRequired, // 보고서 상태 변경 함수
+  reports: propTypes.array.isRequired,
+  onReportSelect: propTypes.func.isRequired, 
+  onResolve: propTypes.func.isRequired,
 };
 
 export default ReportTable;
