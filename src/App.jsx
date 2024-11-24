@@ -13,24 +13,9 @@ const PASSCODE_HASH = md5("MuMeLeLe");
 function App() {
   const [reports, setReports] = useState(() => {
     const savedReports = localStorage.getItem("reports");
-    return savedReports
-      ? JSON.parse(savedReports)
-      : [
-          {
-            id: 1,
-            geocode: { lat: 49.25, lng: -122.91 },
-            reporterName: "Test User",
-            reporterPhone: "1234567890",
-            emergencyType: "Test Emergency",
-            address: "Test Address",
-            placeName: "Test Place",
-            pictureUrl: "",
-            comments: "Test Comment",
-            timestamp: new Date().toISOString(),
-            status: "OPEN",
-          },
-        ];
+    return savedReports ? JSON.parse(savedReports) : [];
   });
+  
 
   const [visibleReports, setVisibleReports] = useState([]);
   const [focusedID, setFocusedID] = useState(0);
@@ -163,11 +148,18 @@ function App() {
       )}
 
       <div id="table">
-        <ReportTable
-          reports={visibleReports} 
-          onReportSelect={(id) => setFocusedID(id)}
-          onResolve={handleResolve}
-        />
+      <ReportTable
+        reports={visibleReports} 
+        onReportSelect={(id) => {
+          setFocusedID(id); // focusedID 업데이트
+          const report = reports.find((r) => r.id === id);
+          if (report) {
+            mapRef.current.flyTo([report.geocode.lat, report.geocode.lng], 15); // 선택된 마커 중심 이동
+          }
+        }}
+  onResolve={handleResolve}
+/>
+
       </div>
 
       <button className="z-[10000] fixed p-2" onClick={clearReports}>
