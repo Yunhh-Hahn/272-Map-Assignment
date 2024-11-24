@@ -22,7 +22,7 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [tempMarkerPoint, setTempMarkerPoint] = useState(null);
   const [tempAddress, setTempAddress] = useState({});
-  const mapRef = useRef(null); // React ref!!!!!omfg
+  const mapRef = useRef(null); // use ref!!!!!
 
   useEffect(() => {
     localStorage.setItem("reports", JSON.stringify(reports));
@@ -148,18 +148,18 @@ function App() {
       )}
 
       <div id="table">
-      <ReportTable
-        reports={visibleReports} 
-        onReportSelect={(id) => {
-          setFocusedID(id); // focusedID 업데이트
-          const report = reports.find((r) => r.id === id);
-          if (report) {
-            mapRef.current.flyTo([report.geocode.lat, report.geocode.lng], 15); // 선택된 마커 중심 이동
-          }
-        }}
-  onResolve={handleResolve}
-/>
-
+          <ReportTable
+          reports={visibleReports}
+          focusedID={focusedID} 
+          onReportSelect={(id) => {
+            setFocusedID(id); 
+            const report = reports.find((r) => r.id === id);
+            if (report) {
+              mapRef.current.flyTo([report.geocode.lat, report.geocode.lng], 15); // move the map to the selected report if not wanted, delete this part
+            }
+          }}
+          onResolve={handleResolve}
+        />
       </div>
 
       <button className="z-[10000] fixed p-2" onClick={clearReports}>
