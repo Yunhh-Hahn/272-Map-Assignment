@@ -15,7 +15,6 @@ function App() {
     const savedReports = localStorage.getItem("reports");
     return savedReports ? JSON.parse(savedReports) : [];
   });
-  
 
   const [visibleReports, setVisibleReports] = useState([]);
   const [focusedID, setFocusedID] = useState(0);
@@ -29,34 +28,45 @@ function App() {
   }, [reports]);
 
   const updateVisibleReports = () => {
-    const mapInstance = mapRef.current; 
+    const mapInstance = mapRef.current;
     if (!mapInstance) return;
 
-    const bounds = mapInstance.getBounds(); 
+    const bounds = mapInstance.getBounds();
     const visible = reports.filter((report) => {
       const { lat, lng } = report.geocode || {};
-      return lat != null && lng != null && bounds.contains([lat, lng]); 
+      return lat != null && lng != null && bounds.contains([lat, lng]);
     });
 
     console.log("Updated visible reports based on bounds:", visible); // for debugging ok to be deleted
-    setVisibleReports(visible); 
+    setVisibleReports(visible);
   };
 
   useEffect(() => {
-    const mapInstance = mapRef.current; 
-    if (!mapInstance) return;
+    const checkMapInstance = () => {
+      const mapInstance = mapRef.current;
+      if (!mapInstance) return;
+      updateVisibleReports();
 
-    updateVisibleReports();
-    mapInstance.on("moveend", updateVisibleReports);
-    mapInstance.on("zoomend", updateVisibleReports);
+      mapInstance.on("moveend", updateVisibleReports);
+      mapInstance.on("zoomend", updateVisibleReports);
 
-    return () => {
-      mapInstance.off("moveend", updateVisibleReports);
-      mapInstance.off("zoomend", updateVisibleReports);
+      return () => {
+        mapInstance.off("moveend", updateVisibleReports);
+        mapInstance.off("zoomend", updateVisibleReports);
+      };
     };
-  }, [reports]);
 
-  
+    // Check if mapRef.current is available, rerun until map mounts
+    const interval = setInterval(() => {
+      if (mapRef.current) {
+        clearInterval(interval);
+        checkMapInstance();
+      }
+    }, 50);
+
+    return () => clearInterval(interval); // remove when map is mounted
+  }, [mapRef, reports]);
+
   const handleMapClick = (markerPoint, data) => {
     setTempMarkerPoint(markerPoint);
     setTempAddress(data);
@@ -119,7 +129,7 @@ function App() {
           ]}
           minZoom={10}
           maxZoom={18}
-          ref={mapRef} 
+          ref={mapRef}
         >
           <TileLayer
             attribution="&copy; OpenStreetMap contributors"
@@ -148,14 +158,17 @@ function App() {
       )}
 
       <div id="table">
-          <ReportTable
+        <ReportTable
           reports={visibleReports}
-          focusedID={focusedID} 
+          focusedID={focusedID}
           onReportSelect={(id) => {
-            setFocusedID(id); 
+            setFocusedID(id);
             const report = reports.find((r) => r.id === id);
             if (report) {
-              mapRef.current.flyTo([report.geocode.lat, report.geocode.lng], 15); // move the map to the selected report if not wanted, delete this part
+              mapRef.current.flyTo(
+                [report.geocode.lat, report.geocode.lng],
+                15
+              ); // move the map to the selected report if not wanted, delete this part
             }
           }}
           onResolve={handleResolve}
