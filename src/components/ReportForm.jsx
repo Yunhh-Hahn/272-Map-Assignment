@@ -37,6 +37,11 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
     postCode: tempAddress.address.postcode ? tempAddress.address.postcode : "",
     pictureUrl: "",
     comments: "",
+    geo: {
+      lat: tempAddress.lat,
+      lng: tempAddress.lon,
+    }, 
+    
   });
 
   const handleChange = (e) => {
@@ -55,6 +60,9 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("tempAddress:", tempAddress); // tempAddress 확인
+console.log("formData:", formData);       // formData 확인
+
     if (isValidForm()) {
       onSubmit(formData);
     } else {

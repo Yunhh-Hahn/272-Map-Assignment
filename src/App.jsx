@@ -1,50 +1,68 @@
-// App.jsx
-
 import { MapContainer, TileLayer } from "react-leaflet";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import DrawReports from "./components/DrawReports.jsx";
 import ReportForm from "./components/ReportForm.jsx";
 import AddReport from "./components/AddReport.jsx";
-import ReportList from "./components/ReportList.jsx";
+import ReportTable from "./components/ReportTable.jsx";
 import md5 from "md5";
 
 // Passcode here--------------------------------------------------
 const PASSCODE_HASH = md5("MuMeLeLe");
 
 function App() {
-  // State to store all reports, initialized from localStorage
   const [reports, setReports] = useState(() => {
     const savedReports = localStorage.getItem("reports");
     return savedReports ? JSON.parse(savedReports) : [];
   });
+  
 
-  // State to keep track of the currently focused report ID
+  const [visibleReports, setVisibleReports] = useState([]);
   const [focusedID, setFocusedID] = useState(0);
-
-  // State to control the display of the report submission form
   const [showForm, setShowForm] = useState(false);
-
-  // State to temporarily store the marker point and address name where the user clicked
   const [tempMarkerPoint, setTempMarkerPoint] = useState(null);
   const [tempAddress, setTempAddress] = useState({});
+  const mapRef = useRef(null); // use ref!!!!!
 
-  // State to store the map instance for future reference
-  const [mapInstance, setMapInstance] = useState(null);
-
-  // Effect to save reports to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("reports", JSON.stringify(reports));
   }, [reports]);
 
-  // Function to handle clicks on the map, and fetch address, and display the report form
+  const updateVisibleReports = () => {
+    const mapInstance = mapRef.current; 
+    if (!mapInstance) return;
+
+    const bounds = mapInstance.getBounds(); 
+    const visible = reports.filter((report) => {
+      const { lat, lng } = report.geocode || {};
+      return lat != null && lng != null && bounds.contains([lat, lng]); 
+    });
+
+    console.log("Updated visible reports based on bounds:", visible); // for debugging ok to be deleted
+    setVisibleReports(visible); 
+  };
+
+  useEffect(() => {
+    const mapInstance = mapRef.current; 
+    if (!mapInstance) return;
+
+    updateVisibleReports();
+    mapInstance.on("moveend", updateVisibleReports);
+    mapInstance.on("zoomend", updateVisibleReports);
+
+    return () => {
+      mapInstance.off("moveend", updateVisibleReports);
+      mapInstance.off("zoomend", updateVisibleReports);
+    };
+  }, [reports]);
+
+  
   const handleMapClick = (markerPoint, data) => {
     setTempMarkerPoint(markerPoint);
     setTempAddress(data);
     setShowForm(true);
   };
 
-  // Function to handle form submission and add a new report
   const handleFormSubmit = (formData) => {
     const newReport = {
       id: reports.length ? reports[reports.length - 1].id + 1 : 1,
@@ -66,9 +84,10 @@ function App() {
     setFocusedID(newReport.id);
     setTempMarkerPoint(null);
     setShowForm(false);
+
+    updateVisibleReports();
   };
 
-  // Function to handle resolving a report with passcode verification
   const handleResolve = (reportId) => {
     const userPasscode = prompt("Enter passcode to resolve this report:");
     if (md5(userPasscode) === PASSCODE_HASH) {
@@ -83,45 +102,39 @@ function App() {
     }
   };
 
-  // Function to clear all reports
   const clearReports = () => {
     setReports([]);
   };
 
   return (
-    <>
-      {/* Map Container */}
-      <MapContainer
-        center={[49.259065, -122.91798]}
-        zoom={13}
-        className="h-screen w-screen z-0"
-        maxBounds={[
-          [48.2, -121.8],
-          [50.499998, -125.6833],
-        ]}
-        minZoom={10}
-        maxZoom={18}
-        whenCreated={(map) => setMapInstance(map)} // Store map instance
-      >
-        {/* Tile Layer */}
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">
-            OpenStreetMap
-          </a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {/* Component to handle map clicks */}
-        <AddReport onMapClick={handleMapClick} />
-        {/* Component to draw reports on the map */}
-        <DrawReports
-          reportArray={reports}
-          focusedID={focusedID}
-          onClick={(id) => setFocusedID(id)}
-          onResolve={handleResolve}
-        />
-      </MapContainer>
+    <div id="container">
+      <div id="map">
+        <MapContainer
+          center={[49.259065, -122.91798]}
+          zoom={13}
+          className="h-full w-full"
+          maxBounds={[
+            [48.2, -121.8],
+            [50.499998, -125.6833],
+          ]}
+          minZoom={10}
+          maxZoom={18}
+          ref={mapRef} 
+        >
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <AddReport onMapClick={handleMapClick} />
+          <DrawReports
+            reportArray={reports}
+            focusedID={focusedID}
+            onClick={(id) => setFocusedID(id)}
+            onResolve={handleResolve}
+          />
+        </MapContainer>
+      </div>
 
-      {/* Conditionally render the Report Form */}
       {showForm && (
         <ReportForm
           markerPoint={tempMarkerPoint}
@@ -134,20 +147,25 @@ function App() {
         />
       )}
 
-      {/* Conditionally render the Report List */}
-      {mapInstance && (
-        <ReportList
-          reports={reports}
-          map={mapInstance}
-          onReportSelect={(id) => setFocusedID(id)}
+      <div id="table">
+          <ReportTable
+          reports={visibleReports}
+          focusedID={focusedID} 
+          onReportSelect={(id) => {
+            setFocusedID(id); 
+            const report = reports.find((r) => r.id === id);
+            if (report) {
+              mapRef.current.flyTo([report.geocode.lat, report.geocode.lng], 15); // move the map to the selected report if not wanted, delete this part
+            }
+          }}
+          onResolve={handleResolve}
         />
-      )}
+      </div>
 
-      {/* Button to clear all reports (for testing purposes) */}
       <button className="z-[10000] fixed p-2" onClick={clearReports}>
         Clear Reports
       </button>
-    </>
+    </div>
   );
 }
 

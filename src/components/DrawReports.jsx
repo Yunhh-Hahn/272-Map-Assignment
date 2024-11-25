@@ -1,8 +1,8 @@
-import { Marker, Popup, } from 'react-leaflet';
-import { Icon } from 'leaflet';
-import pinFocus from '../assets/pin-focus.png';
-import pinDefault from '../assets/pin.png';
-import propTypes from 'prop-types';
+import { Marker, Popup } from "react-leaflet";
+import { Icon } from "leaflet";
+import pinFocus from "../assets/pin-focus.png";
+import pinDefault from "../assets/pin.png";
+import propTypes from "prop-types";
 
 const defaultIcon = new Icon({
   iconUrl: pinDefault,
@@ -14,25 +14,12 @@ const focusedIcon = new Icon({
   iconSize: [38, 38],
 });
 
-/**
- * Draws a collection of reports on the map as markers with popups.
- * If a report.id matches the focusedID, the marker is highlighted.
- *
- * @param {object[]} reportArray - An array of report objects.
- * @param {number} focusedID - The id of the report to be highlighted.
- * @param {function} onClick - Function to handle marker click.
- * @param {function} onResolve - Function to handle report resolution.
- * @returns {JSX.Element[]}
- */
-function DrawReports ({ reportArray, focusedID, onClick, onResolve }) {
-  
+function DrawReports({ reportArray, focusedID, onClick, onResolve }) {
   return (
     <>
       {reportArray &&
-        reportArray.map((report) => {
-          
-          // if(report.status === 'RESOLVED') return null; // Skip resolved reports, if want to display all, including reports, add a filter and a prop to control
-          return <Marker
+        reportArray.map((report) => (
+          <Marker
             position={report.geocode}
             icon={report.id === focusedID ? focusedIcon : defaultIcon}
             key={report.id}
@@ -43,7 +30,6 @@ function DrawReports ({ reportArray, focusedID, onClick, onResolve }) {
             }}
           >
             <Popup>
-              
               <div>
                 <h3>{report.emergencyType}</h3>
                 <p>
@@ -53,7 +39,7 @@ function DrawReports ({ reportArray, focusedID, onClick, onResolve }) {
                   <strong>Phone:</strong> {report.reporterPhone}
                 </p>
                 <p>
-                  <strong>Location:</strong> {report.address || 'N/A'}
+                  <strong>Location:</strong> {report.address || "N/A"}
                 </p>
                 <p>
                   <strong>Comments:</strong> {report.comments}
@@ -62,29 +48,30 @@ function DrawReports ({ reportArray, focusedID, onClick, onResolve }) {
                   <strong>Status:</strong> {report.status}
                 </p>
                 <p>
-                  <strong>Time/Date:</strong>{' '}
+                  <strong>Time/Date:</strong>{" "}
                   {new Date(report.timestamp).toLocaleString()}
                 </p>
                 {report.pictureUrl && (
                   <p>
-                    <a href={report.pictureUrl} target="_blank" rel="noreferrer">
+                    <a
+                      href={report.pictureUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       View Image
                     </a>
                   </p>
                 )}
-                {/* Only show the Resolve button if status is OPEN */}
-                {report.status === 'OPEN' && (
-                  <button onClick={() => onResolve(report.id)}>
-                    Resolve
-                  </button>
+                {report.status === "OPEN" && (
+                  <button onClick={() => onResolve(report.id)}>Resolve</button>
                 )}
               </div>
             </Popup>
           </Marker>
-        })}
+        ))}
     </>
   );
-};
+}
 
 DrawReports.propTypes = {
   reportArray: propTypes.array.isRequired,
