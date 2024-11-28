@@ -7,6 +7,7 @@ import DrawReports from "./components/DrawReports.jsx";
 import ReportForm from "./components/ReportForm.jsx";
 import AddReport from "./components/AddReport.jsx";
 import ReportTable from "./components/ReportTable.jsx";
+import md5 from "md5";
 import { SECRET_PASSWORD } from "./assets/constants.jsx";
 
 function App() {
