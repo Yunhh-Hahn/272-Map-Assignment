@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import propTypes from "prop-types";
-import md5 from "md5";
-
-const PASSCODE_HASH = md5("MuMeLeLe"); // Define your passcode hash here
+import { SECRET_PASSWORD } from "../assets/constants";
 
 function ReportList({
   reports,
@@ -51,7 +49,7 @@ function ReportList({
   // Handle modify/delete with passcode prompt
   const handlePasscodeAction = (action, report) => {
     const userPasscode = prompt("Enter passcode:");
-    if (md5(userPasscode) === PASSCODE_HASH) {
+    if (md5(userPasscode) === SECRET_PASSWORD) {
       if (action === "modify") {
         onUpdateReport(report);
       } else if (action === "delete") {

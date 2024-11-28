@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import propTypes from "prop-types";
-import md5 from "md5";
-
-const PASSCODE_HASH = md5("MuMeLeLe"); // Replace 'MuMeLeLe' with your actual passcode
+import { SECRET_PASSWORD } from "../assets/constants";
 
 function ReportTable({
   reports,
@@ -56,7 +54,7 @@ function ReportTable({
   // Handle Modify button click
   const handleModifyClick = (report) => {
     const userPasscode = prompt("Enter passcode to modify this report:");
-    if (md5(userPasscode) === PASSCODE_HASH) {
+    if (md5(userPasscode) === SECRET_PASSWORD) {
       setIsModifying(true);
       setModifyingReport(report);
     } else {
