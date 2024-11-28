@@ -116,16 +116,58 @@ function ReportTable({
         </label>
       </div>
 
-      {/* {selectedReport.pictureUrl && (
-        <div className="mt-4">
-          <strong>Image:</strong>
-          <img
-            src={selectedReport.pictureUrl}
-            alt="Report"
-            className="mt-2 max-w-full h-auto rounded shadow"
-          />
+      {selectedReport && (
+        <div className="report-details p-4 bg-gray-100 rounded-lg shadow-md mb-4">
+          <h3 className="font-bold mb-2">Report Details</h3>
+          <p>
+            <strong>ID:</strong> {selectedReport.id}
+          </p>
+          <p>
+            <strong>Emergency Type:</strong> {selectedReport.emergencyType}
+          </p>
+          <p>
+            <strong>Reporter Name:</strong> {selectedReport.reporterName}
+          </p>
+          <p>
+            <strong>Reporter Phone:</strong> {selectedReport.reporterPhone}
+          </p>
+          <p>
+            <strong>Address:</strong>{" "}
+            {selectedReport.address || "Unknown location"}
+          </p>
+          <p>
+            <strong>Place Name:</strong> {selectedReport.placeName}
+          </p>
+          <p>
+            <strong>Comments:</strong>{" "}
+            {selectedReport.comments || "No comments available."}
+          </p>
+          <p>
+            <strong>Timestamp:</strong>{" "}
+            {new Date(selectedReport.timestamp).toLocaleString()}
+          </p>
+          <p>
+            <strong>Status:</strong> {selectedReport.status}
+          </p>
+          {selectedReport.pictureUrl && (
+            <div className="mt-4">
+              <strong>Image:</strong>
+              <img
+                src={selectedReport.pictureUrl}
+                alt="Report"
+                className="mt-2 max-w-3xl h-auto rounded shadow"
+              />
+            </div>
+          )}
+          <button
+            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            onClick={() => setSelectedReport(null)}
+          >
+            Close Details
+          </button>
         </div>
-      )} */}
+      )}
+
 
       {/* Modification Modal */}
       {isModifying && modifyingReport && (
@@ -178,6 +220,16 @@ function ReportTable({
                 type="text"
                 name="placeName"
                 value={modifyingReport.placeName}
+                onChange={handleModifyChange}
+                className="border p-2 rounded w-full"
+              />
+            </label>
+            <label className="block mb-2">
+              Picture URL:
+              <input
+                type="text"
+                name="pictureUrl"
+                value={modifyingReport.pictureUrl}
                 onChange={handleModifyChange}
                 className="border p-2 rounded w-full"
               />
