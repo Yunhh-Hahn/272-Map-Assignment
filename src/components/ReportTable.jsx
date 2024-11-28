@@ -29,8 +29,6 @@ function ReportTable({
     }
   }, [reports, selectedReport]);
 
-  console.log(selectedReport)
-
   // Function to sort reports
   const sortedReports = [...reports].sort((a, b) => {
     let comparison = 0;
@@ -168,7 +166,6 @@ function ReportTable({
           </button>
         </div>
       )}
-
 
       {/* Modification Modal */}
       {isModifying && modifyingReport && (

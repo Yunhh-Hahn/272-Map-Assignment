@@ -145,10 +145,6 @@ function App() {
     }
   };
 
-  const clearReports = () => {
-    setReports([]);
-  };
-
   return (
     <div id="container">
       <div id="map">
@@ -212,10 +208,6 @@ function App() {
           onModify={handleModifyReport} // Pass the function to handle report modification
         />
       </div>
-
-      <button className="z-[10000] fixed p-2" onClick={clearReports}>
-        Clear Reports
-      </button>
     </div>
   );
 }
