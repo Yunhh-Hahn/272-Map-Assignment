@@ -29,9 +29,9 @@ function DrawReports({ reportArray, focusedID, onClick, onResolve }) {
               },
             }}
           >
-            <Popup className="">
-              <div className="">
-                <h3 className="text-xl font-bold">{report.emergencyType}</h3>
+            <Popup>
+              <div>
+                <h3>{report.emergencyType}</h3>
                 <p>
                   <strong>Reported by:</strong> {report.reporterName}
                 </p>
@@ -63,12 +63,7 @@ function DrawReports({ reportArray, focusedID, onClick, onResolve }) {
                   </p>
                 )}
                 {report.status === "OPEN" && (
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    onClick={() => onResolve(report.id)}
-                  >
-                    Resolve
-                  </button>
+                  <button onClick={() => onResolve(report.id)}>Resolve</button>
                 )}
               </div>
             </Popup>

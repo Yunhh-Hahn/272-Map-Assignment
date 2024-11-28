@@ -1,3 +1,5 @@
+// App.jsx
+
 import { MapContainer, TileLayer } from "react-leaflet";
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
@@ -15,6 +17,7 @@ function App() {
     const savedReports = localStorage.getItem("reports");
     return savedReports ? JSON.parse(savedReports) : [];
   });
+  
 
   const [visibleReports, setVisibleReports] = useState([]);
   const [focusedID, setFocusedID] = useState(0);
@@ -28,75 +31,101 @@ function App() {
   }, [reports]);
 
   const updateVisibleReports = () => {
-    const mapInstance = mapRef.current;
+    const mapInstance = mapRef.current; 
     if (!mapInstance) return;
 
-    const bounds = mapInstance.getBounds();
+    const bounds = mapInstance.getBounds(); 
     const visible = reports.filter((report) => {
       const { lat, lng } = report.geocode || {};
-      return lat != null && lng != null && bounds.contains([lat, lng]);
+      return lat != null && lng != null && bounds.contains([lat, lng]); 
     });
 
     console.log("Updated visible reports based on bounds:", visible); // for debugging ok to be deleted
-    setVisibleReports(visible);
+    setVisibleReports(visible); 
   };
 
   useEffect(() => {
-    const checkMapInstance = () => {
-      const mapInstance = mapRef.current;
-      if (!mapInstance) return;
-      updateVisibleReports();
+    const mapInstance = mapRef.current; 
+    if (!mapInstance) return;
 
-      mapInstance.on("moveend", updateVisibleReports);
-      mapInstance.on("zoomend", updateVisibleReports);
+    updateVisibleReports();
+    mapInstance.on("moveend", updateVisibleReports);
+    mapInstance.on("zoomend", updateVisibleReports);
 
-      return () => {
-        mapInstance.off("moveend", updateVisibleReports);
-        mapInstance.off("zoomend", updateVisibleReports);
-      };
+    return () => {
+      mapInstance.off("moveend", updateVisibleReports);
+      mapInstance.off("zoomend", updateVisibleReports);
     };
+  }, [reports]);
 
-    // Check if mapRef.current is available, rerun until map mounts
-    const interval = setInterval(() => {
-      if (mapRef.current) {
-        clearInterval(interval);
-        checkMapInstance();
-      }
-    }, 50);
-
-    return () => clearInterval(interval); // remove when map is mounted
-  }, [mapRef, reports]);
-
-  const handleMapClick = (markerPoint, data) => {
+  
+  // Update handleMapClick to perform reverse geocoding
+  const handleMapClick = async (markerPoint) => {
     setTempMarkerPoint(markerPoint);
-    setTempAddress(data);
+
+    // Perform reverse geocoding to get the address
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${markerPoint.lat}&lon=${markerPoint.lng}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setTempAddress(data); // Store the address data
+    } catch (error) {
+      console.error("Error fetching address:", error);
+      setTempAddress({});
+    }
+
     setShowForm(true);
   };
 
-  const handleFormSubmit = (formData) => {
-    const newReport = {
-      id: reports.length ? reports[reports.length - 1].id + 1 : 1,
-      geocode: {
-        lng: tempMarkerPoint.lng,
-        lat: tempMarkerPoint.lat,
-      },
-      reporterName: formData.reporterName,
-      reporterPhone: formData.reporterPhone,
-      emergencyType: formData.emergencyType,
-      address: formData.address,
-      placeName: formData.placeName,
-      pictureUrl: formData.pictureUrl,
-      comments: formData.comments,
-      timestamp: new Date().toISOString(),
-      status: "OPEN",
-    };
-    setReports((prevReports) => [...prevReports, newReport]);
-    setFocusedID(newReport.id);
-    setTempMarkerPoint(null);
-    setShowForm(false);
 
-    updateVisibleReports();
+
+
+  const handleModifyReport = (modifiedReport) => {
+    if (modifiedReport.delete) {
+      // Handle deletion
+      setReports((prevReports) =>
+        prevReports.filter((report) => report.id !== modifiedReport.id)
+      );
+    } else {
+      // Handle modification
+      setReports((prevReports) =>
+        prevReports.map((report) =>
+          report.id === modifiedReport.id ? modifiedReport : report
+        )
+      );
+    }
   };
+
+// App.jsx
+
+const handleFormSubmit = (formData, updatedMarkerPoint = null) => {
+  const markerPointToUse = updatedMarkerPoint || tempMarkerPoint;
+
+  const newReport = {
+    id: reports.length ? reports[reports.length - 1].id + 1 : 1,
+    geocode: {
+      lng: markerPointToUse.lng,
+      lat: markerPointToUse.lat,
+    },
+    reporterName: formData.reporterName,
+    reporterPhone: formData.reporterPhone,
+    emergencyType: formData.emergencyType,
+    address: formData.address,
+    placeName: formData.placeName,
+    pictureUrl: formData.pictureUrl,
+    comments: formData.comments,
+    timestamp: new Date().toISOString(),
+    status: "OPEN",
+  };
+  setReports((prevReports) => [...prevReports, newReport]);
+  setFocusedID(newReport.id);
+  setTempMarkerPoint(null);
+  setShowForm(false);
+
+  updateVisibleReports();
+};
+
 
   const handleResolve = (reportId) => {
     const userPasscode = prompt("Enter passcode to resolve this report:");
@@ -129,7 +158,7 @@ function App() {
           ]}
           minZoom={10}
           maxZoom={18}
-          ref={mapRef}
+          ref={mapRef} 
         >
           <TileLayer
             attribution="&copy; OpenStreetMap contributors"
@@ -149,7 +178,7 @@ function App() {
         <ReportForm
           markerPoint={tempMarkerPoint}
           onSubmit={handleFormSubmit}
-          tempAddress={tempAddress}
+          tempAddress={tempAddress} // Pass tempAddress here
           onClose={() => {
             setShowForm(false);
             setTempMarkerPoint(null);
@@ -157,28 +186,37 @@ function App() {
         />
       )}
 
+
+
       <div id="table">
-        <ReportTable
-          reports={visibleReports}
-          focusedID={focusedID}
-          onReportSelect={(id) => {
-            setFocusedID(id);
-            const report = reports.find((r) => r.id === id);
-            if (report) {
-              mapRef.current.flyTo(
-                [report.geocode.lat, report.geocode.lng],
-                15
-              ); // move the map to the selected report if not wanted, delete this part
-            }
-          }}
-          onResolve={handleResolve}
-        />
+      {/* ReportTable Component */}
+      {/* This component is used to display a table view of the reports that are visible on the map */}
+      {/* It also allows sorting, selecting, modifying, and resolving reports */}
+      <ReportTable
+        reports={visibleReports} // Pass the reports that are visible in the current map bounds
+        focusedID={focusedID} // Pass the currently focused report ID to highlight it
+        onReportSelect={(id) => {
+          // Handle report selection (e.g., center the map on the selected report)
+          setFocusedID(id);
+          const report = reports.find((r) => r.id === id);
+          if (report) {
+            mapRef.current.flyTo([report.geocode.lat, report.geocode.lng], 15);
+          }
+        }}
+        onResolve={handleResolve} // Pass the function to resolve reports
+        onModify={handleModifyReport} // Pass the function to handle report modification
+      />
       </div>
 
       <button className="z-[10000] fixed p-2" onClick={clearReports}>
         Clear Reports
       </button>
     </div>
+
+
+          
+
+
   );
 }
 

@@ -1,3 +1,6 @@
+/* App.css */
+
+
 #container {
     display: flex;
     height: 100vh; /* 전체 화면 높이 */
@@ -27,3 +30,27 @@
   }
   
   
+
+
+/* Suggestions Dropdown */
+.suggestions-list {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  width: calc(100% - 20px); /* Adjust based on your input padding */
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  z-index: 1000;
+}
+
+.suggestions-list li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestions-list li:hover {
+  background-color: #f0f0f0;
+}
