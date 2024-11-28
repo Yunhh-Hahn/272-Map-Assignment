@@ -80,6 +80,19 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve }) {
           <p><strong>Comments:</strong> {selectedReport.comments || 'No comments available.'}</p>
           <p><strong>Timestamp:</strong> {new Date(selectedReport.timestamp).toLocaleString()}</p>
           <p><strong>Status:</strong> {selectedReport.status}</p>
+
+          {/* Image Section */}
+          {selectedReport.pictureUrl && (
+            <div className="mt-4">
+              <strong>Image:</strong>
+              <img
+                src={selectedReport.pictureUrl}
+                alt="Report"
+                className="mt-2 max-w-full h-auto rounded shadow"
+              />
+            </div>
+          )}
+
           <button
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             onClick={() => setSelectedReport(null)}
@@ -88,6 +101,7 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve }) {
           </button>
         </div>
       )}
+
 
       {/* Comments-only Modal */}
       {modalContent && (
