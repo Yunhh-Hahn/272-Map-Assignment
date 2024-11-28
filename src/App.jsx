@@ -7,10 +7,7 @@ import DrawReports from "./components/DrawReports.jsx";
 import ReportForm from "./components/ReportForm.jsx";
 import AddReport from "./components/AddReport.jsx";
 import ReportTable from "./components/ReportTable.jsx";
-import md5 from "md5";
-
-// Passcode here--------------------------------------------------
-const PASSCODE_HASH = md5("MuMeLeLe");
+import { SECRET_PASSWORD } from "./assets/constants.jsx";
 
 function App() {
   const [reports, setReports] = useState(() => {
@@ -135,7 +132,7 @@ function App() {
 
   const handleResolve = (reportId) => {
     const userPasscode = prompt("Enter passcode to resolve this report:");
-    if (md5(userPasscode) === PASSCODE_HASH) {
+    if (md5(userPasscode) === SECRET_PASSWORD) {
       setReports((prevReports) =>
         prevReports.map((report) =>
           report.id === reportId ? { ...report, status: "RESOLVED" } : report
