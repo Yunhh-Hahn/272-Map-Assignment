@@ -1,14 +1,20 @@
 // ReportTable.jsx
 
-import React, { useState, useEffect } from 'react';
-import propTypes from 'prop-types';
-import md5 from 'md5';
+import React, { useState, useEffect } from "react";
+import propTypes from "prop-types";
+import md5 from "md5";
 
-const PASSCODE_HASH = md5('MuMeLeLe'); // Replace 'MuMeLeLe' with your actual passcode
+const PASSCODE_HASH = md5("MuMeLeLe"); // Replace 'MuMeLeLe' with your actual passcode
 
-function ReportTable({ reports, focusedID, onReportSelect, onResolve, onModify }) {
-  const [sortKey, setSortKey] = useState('id'); // Default sort by ID
-  const [sortOrder, setSortOrder] = useState('asc'); // Ascending order by default
+function ReportTable({
+  reports,
+  focusedID,
+  onReportSelect,
+  onResolve,
+  onModify,
+}) {
+  const [sortKey, setSortKey] = useState("id"); // Default sort by ID
+  const [sortOrder, setSortOrder] = useState("asc"); // Ascending order by default
   const [selectedReport, setSelectedReport] = useState(null); // For detailed view
   const [modalContent, setModalContent] = useState(null); // For comments-only modal
   const [isModifying, setIsModifying] = useState(false); // To track if modification is allowed
@@ -16,7 +22,10 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve, onModify }
 
   // Effect to reset selectedReport if it's no longer in the reports list
   useEffect(() => {
-    if (selectedReport && !reports.some((report) => report.id === selectedReport.id)) {
+    if (
+      selectedReport &&
+      !reports.some((report) => report.id === selectedReport.id)
+    ) {
       setSelectedReport(null);
     }
   }, [reports, selectedReport]);
@@ -25,31 +34,31 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve, onModify }
   const sortedReports = [...reports].sort((a, b) => {
     let comparison = 0;
 
-    if (sortKey === 'emergencyType') {
+    if (sortKey === "emergencyType") {
       comparison = a.emergencyType.localeCompare(b.emergencyType);
-    } else if (sortKey === 'reporterName') {
+    } else if (sortKey === "reporterName") {
       comparison = a.reporterName.localeCompare(b.reporterName);
-    } else if (sortKey === 'address') {
-      comparison = (a.address || '').localeCompare(b.address || '');
-    } else if (sortKey === 'status') {
+    } else if (sortKey === "address") {
+      comparison = (a.address || "").localeCompare(b.address || "");
+    } else if (sortKey === "status") {
       comparison = a.status.localeCompare(b.status);
-    } else if (sortKey === 'timestamp') {
+    } else if (sortKey === "timestamp") {
       comparison = new Date(a.timestamp) - new Date(b.timestamp);
     } else {
       comparison = a.id - b.id; // Default sorting by ID
     }
 
-    return sortOrder === 'asc' ? comparison : -comparison;
+    return sortOrder === "asc" ? comparison : -comparison;
   });
 
   // Handle Modify button click
   const handleModifyClick = (report) => {
-    const userPasscode = prompt('Enter passcode to modify this report:');
+    const userPasscode = prompt("Enter passcode to modify this report:");
     if (md5(userPasscode) === PASSCODE_HASH) {
       setIsModifying(true);
       setModifyingReport(report);
     } else {
-      alert('Incorrect passcode.');
+      alert("Incorrect passcode.");
     }
   };
 
@@ -68,7 +77,7 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve, onModify }
 
   // Handle deleting the report during modification
   const handleDeleteReport = () => {
-    if (window.confirm('Are you sure you want to delete this report?')) {
+    if (window.confirm("Are you sure you want to delete this report?")) {
       onModify({ ...modifyingReport, delete: true });
       setIsModifying(false);
       setModifyingReport(null);
@@ -204,7 +213,8 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve, onModify }
           <div className="bg-white p-6 rounded-lg shadow-md max-w-md w-full">
             <h3 className="text-lg font-bold mb-4">Comments</h3>
             <p className="mb-4">
-              {modalContent.comments || 'No comments available for this report.'}
+              {modalContent.comments ||
+                "No comments available for this report."}
             </p>
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -235,7 +245,7 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve, onModify }
               <tr
                 key={report.id}
                 className={`cursor-pointer hover:bg-gray-100 ${
-                  report.id === focusedID ? 'bg-blue-100' : ''
+                  report.id === focusedID ? "bg-blue-100" : ""
                 }`}
                 onClick={() => {
                   onReportSelect(report.id);
@@ -245,7 +255,9 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve, onModify }
                 <td className="border p-2">{report.id}</td>
                 <td className="border p-2">{report.emergencyType}</td>
                 <td className="border p-2">{report.reporterName}</td>
-                <td className="border p-2">{report.address || 'Unknown location'}</td>
+                <td className="border p-2">
+                  {report.address || "Unknown location"}
+                </td>
                 <td className="border p-2">{report.status}</td>
                 <td className="border p-2">
                   <button
@@ -257,7 +269,7 @@ function ReportTable({ reports, focusedID, onReportSelect, onResolve, onModify }
                   >
                     View Comments
                   </button>
-                  {report.status === 'OPEN' && (
+                  {report.status === "OPEN" && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();

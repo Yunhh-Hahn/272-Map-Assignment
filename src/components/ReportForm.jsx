@@ -1,7 +1,6 @@
-
-import './ReportForm.css';
-import { useState } from 'react';
-import propTypes from 'prop-types';
+import "./ReportForm.css";
+import { useState } from "react";
+import propTypes from "prop-types";
 
 function ReportForm({ tempAddress, onSubmit, onClose }) {
   // temp.display_name is a preformatted string, we need to extract the address name from it
@@ -9,7 +8,7 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
   let lowerBound = 0;
   let higherBound = 2;
   let placeName = tempAddress.name;
-  
+
   if (tempAddress.name !== "") {
     if (tempAddress.addresstype === "road") {
       lowerBound = 0;
@@ -27,7 +26,6 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
     .slice(lowerBound, higherBound)
     .join(",");
 
-
   const [formData, setFormData] = useState({
     reporterName: "",
     reporterPhone: "",
@@ -40,8 +38,7 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
     geo: {
       lat: tempAddress.lat,
       lng: tempAddress.lon,
-    }, 
-    
+    },
   });
 
   const handleChange = (e) => {
@@ -61,7 +58,7 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("tempAddress:", tempAddress); // tempAddress 확인
-console.log("formData:", formData);       // formData 확인
+    console.log("formData:", formData); // formData 확인
 
     if (isValidForm()) {
       onSubmit(formData);
