@@ -14,14 +14,20 @@
 
 /* Modal content styling */
 .modal-content {
-  background-color: #f9f9f9; /* Light background for contrast */
+  background-color: #f9f9f9;
+  /* Light background for contrast */
   padding: 30px;
-  border-radius: 10px; /* Smooth edges */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+  border-radius: 10px;
+  /* Smooth edges */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Add subtle shadow */
   width: 90%;
-  max-width: 500px; /* Responsive sizing */
-  max-height: 90vh; /* Prevent exceeding the viewport height */
-   overflow-y: auto; /* Add vertical scrolling if necessary */
+  max-width: 500px;
+  /* Responsive sizing */
+  max-height: 90vh;
+  /* Prevent exceeding the viewport height */
+  overflow-y: auto;
+  /* Add vertical scrolling if necessary */
 }
 
 /* Form heading styling */
@@ -63,33 +69,39 @@ textarea {
 
 /* Styling for the buttons container */
 #buttons {
-  display: flex; /* Flexbox layout for side-by-side alignment */
-  justify-content: space-between; /* Space between buttons */
-  margin-top: 20px; /* Add some space above the buttons */
+  display: flex;
+  /* Flexbox layout for side-by-side alignment */
+  justify-content: space-between;
+  /* Space between buttons */
+  margin-top: 20px;
+  /* Add some space above the buttons */
   display: flex;
   justify-content: space-between;
 }
 
 /* Button styling */
 button {
-  flex: 1; /* Equal width for buttons */
+  flex: 1;
+  /* Equal width for buttons */
   padding: 10px;
   font-size: 1rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin: 0 5px; /* Add spacing between buttons */
+  margin: 0 5px;
+  /* Add spacing between buttons */
 }
 
 /* Submit button styling */
 button[type="submit"] {
-  background-color: #28a745; /* Green */
+  background-color: #28a745;
+  /* Green */
   color: white;
 }
 
 /* Cancel button styling */
 button[type="button"] {
-  background-color: #dc3545; /* Red */
+  background-color: #dc3545;
+  /* Red */
   color: white;
 }
-

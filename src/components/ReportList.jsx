@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import propTypes from 'prop-types';
-import md5 from 'md5';
+import { useState, useEffect } from "react";
+import propTypes from "prop-types";
+import { SECRET_PASSWORD } from "../assets/constants";
+import md5 from "md5";
 
-const PASSCODE_HASH = md5('MuMeLeLe'); // Define your passcode hash here
-
-function ReportList({ reports, map, onReportSelect, onUpdateReport, onDeleteReport }) {
+function ReportList({
+  reports,
+  map,
+  onReportSelect,
+  onUpdateReport,
+  onDeleteReport,
+}) {
   const [visibleReports, setVisibleReports] = useState([]);
-  const [sortKey, setSortKey] = useState('timestamp'); // Default sort by time/date
+  const [sortKey, setSortKey] = useState("timestamp"); // Default sort by time/date
   const [selectedReportId, setSelectedReportId] = useState(null); // To track selected report
 
   // Filter reports based on map bounds
@@ -20,22 +25,22 @@ function ReportList({ reports, map, onReportSelect, onUpdateReport, onDeleteRepo
     };
 
     updateVisibleReports();
-    map.on('moveend', updateVisibleReports);
-    map.on('zoomend', updateVisibleReports);
+    map.on("moveend", updateVisibleReports);
+    map.on("zoomend", updateVisibleReports);
 
     return () => {
-      map.off('moveend', updateVisibleReports);
-      map.off('zoomend', updateVisibleReports);
+      map.off("moveend", updateVisibleReports);
+      map.off("zoomend", updateVisibleReports);
     };
   }, [map, reports]);
 
   // Sort reports
   const sortedReports = [...visibleReports].sort((a, b) => {
-    if (sortKey === 'location') {
+    if (sortKey === "location") {
       return a.address.localeCompare(b.address);
-    } else if (sortKey === 'emergencyType') {
+    } else if (sortKey === "emergencyType") {
       return a.emergencyType.localeCompare(b.emergencyType);
-    } else if (sortKey === 'status') {
+    } else if (sortKey === "status") {
       return a.status.localeCompare(b.status);
     } else {
       return new Date(b.timestamp) - new Date(a.timestamp);
@@ -44,15 +49,15 @@ function ReportList({ reports, map, onReportSelect, onUpdateReport, onDeleteRepo
 
   // Handle modify/delete with passcode prompt
   const handlePasscodeAction = (action, report) => {
-    const userPasscode = prompt('Enter passcode:');
-    if (md5(userPasscode) === PASSCODE_HASH) {
-      if (action === 'modify') {
+    const userPasscode = prompt("Enter passcode:");
+    if (md5(userPasscode) === SECRET_PASSWORD) {
+      if (action === "modify") {
         onUpdateReport(report);
-      } else if (action === 'delete') {
+      } else if (action === "delete") {
         onDeleteReport(report.id);
       }
     } else {
-      alert('Incorrect passcode.');
+      alert("Incorrect passcode.");
     }
   };
 
@@ -83,18 +88,20 @@ function ReportList({ reports, map, onReportSelect, onUpdateReport, onDeleteRepo
           <li
             key={report.id}
             className={`p-4 rounded-lg shadow flex justify-between items-center ${
-              report.id === selectedReportId ? 'bg-red-200' : 'bg-white'
+              report.id === selectedReportId ? "bg-red-200" : "bg-white"
             }`}
           >
             <div onClick={() => handleReportSelect(report.id)}>
               <strong className="block text-lg">{report.emergencyType}</strong>
-              <span className="text-sm text-gray-600">{report.address || 'Unknown location'}</span>
+              <span className="text-sm text-gray-600">
+                {report.address || "Unknown location"}
+              </span>
               <span className="block text-sm">Status: {report.status}</span>
               <a
                 href={`#`}
                 onClick={(e) => {
                   e.preventDefault();
-                  alert(report.comments || 'No comments available.');
+                  alert(report.comments || "No comments available.");
                 }}
                 className="text-blue-500 hover:underline text-sm"
               >
@@ -104,13 +111,13 @@ function ReportList({ reports, map, onReportSelect, onUpdateReport, onDeleteRepo
             <div className="flex space-x-2">
               <button
                 className="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500"
-                onClick={() => handlePasscodeAction('modify', report)}
+                onClick={() => handlePasscodeAction("modify", report)}
               >
                 Modify
               </button>
               <button
                 className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                onClick={() => handlePasscodeAction('delete', report)}
+                onClick={() => handlePasscodeAction("delete", report)}
               >
                 Delete
               </button>
