@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import propTypes from "prop-types";
-import { SECRET_PASSWORD } from "../assets/constants";
+import { SECRET_PASSWORD } from "../lib/constants";
 import md5 from "md5";
 
 function ReportTable({
@@ -18,6 +18,8 @@ function ReportTable({
   const [modalContent, setModalContent] = useState(null); // For comments-only modal
   const [isModifying, setIsModifying] = useState(false); // To track if modification is allowed
   const [modifyingReport, setModifyingReport] = useState(null); // Report being modified
+
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
 
   // Effect to reset selectedReport if it's no longer in the reports list
   useEffect(() => {
@@ -68,8 +70,51 @@ function ReportTable({
   };
 
   // Handle saving the modifications
-  const handleSaveModification = () => {
-    onModify(modifyingReport);
+  const handleSaveModification = async () => {
+    let updatedReport = { ...modifyingReport };
+
+    // Check if geocode is missing or needs updating
+    if (
+      !updatedReport.geocode ||
+      !updatedReport.geocode.lat ||
+      !updatedReport.geocode.lng
+    ) {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            updatedReport.address
+          )}&format=json&limit=1`
+        );
+        const data = await response.json();
+        if (data && data.length > 0) {
+          updatedReport.geocode = {
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon),
+          };
+        } else {
+          alert("Unable to geocode the provided address.");
+          return;
+        }
+      } catch (error) {
+        console.error("Error fetching geocode data:", error);
+        alert("An error occurred while fetching geocode data.");
+        return;
+      }
+    }
+
+    // Validate geocode data
+    if (
+      updatedReport.geocode.lat < -90 ||
+      updatedReport.geocode.lat > 90 ||
+      updatedReport.geocode.lng < -180 ||
+      updatedReport.geocode.lng > 180
+    ) {
+      alert("Geocode data is invalid. Please check the address.");
+      return;
+    }
+
+    // Save the modification
+    onModify(updatedReport);
     setIsModifying(false);
     setModifyingReport(null);
   };
@@ -80,6 +125,25 @@ function ReportTable({
       onModify({ ...modifyingReport, delete: true });
       setIsModifying(false);
       setModifyingReport(null);
+    }
+  };
+
+  const fetchAddressSuggestions = async (query) => {
+    if (query.length < 3) {
+      setAddressSuggestions([]);
+      return;
+    }
+
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+      query
+    )}&format=json&addressdetails=1&limit=5&viewbox=-139.06,60.00,-114.05,48.30&bounded=1&countrycodes=ca`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setAddressSuggestions(data);
+    } catch (error) {
+      console.error("Error fetching address suggestions:", error);
     }
   };
 
@@ -202,16 +266,45 @@ function ReportTable({
                 className="border p-2 rounded w-full"
               />
             </label>
-            <label className="block mb-2">
+
+            <label className="block mb-2 relative">
               Address:
               <input
                 type="text"
                 name="address"
                 value={modifyingReport.address}
-                onChange={handleModifyChange}
+                onChange={(e) => {
+                  handleModifyChange(e);
+                  fetchAddressSuggestions(e.target.value);
+                }}
                 className="border p-2 rounded w-full"
+                autoComplete="off"
               />
+              {addressSuggestions.length > 0 && (
+                <ul className="absolute z-10 bg-white border mt-1 w-full max-h-48 overflow-y-auto">
+                  {addressSuggestions.map((suggestion, index) => (
+                    <li
+                      key={index}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => {
+                        setModifyingReport({
+                          ...modifyingReport,
+                          address: suggestion.display_name,
+                          geocode: {
+                            lat: parseFloat(suggestion.lat), // Ensure lat is a number
+                            lng: parseFloat(suggestion.lon), // Ensure lng is a number
+                          },
+                        });
+                        setAddressSuggestions([]);
+                      }}
+                    >
+                      {suggestion.display_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </label>
+
             <label className="block mb-2">
               Place Name:
               <input

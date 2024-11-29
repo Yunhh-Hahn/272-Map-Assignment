@@ -1,5 +1,3 @@
-// App.jsx
-
 import { MapContainer, TileLayer } from "react-leaflet";
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
@@ -8,7 +6,7 @@ import ReportForm from "./components/ReportForm.jsx";
 import AddReport from "./components/AddReport.jsx";
 import ReportTable from "./components/ReportTable.jsx";
 import md5 from "md5";
-import { SECRET_PASSWORD } from "./assets/constants.jsx";
+import { SECRET_PASSWORD } from "./lib/constants";
 
 function App() {
   const [reports, setReports] = useState(() => {
@@ -21,23 +19,36 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [tempMarkerPoint, setTempMarkerPoint] = useState(null);
   const [tempAddress, setTempAddress] = useState({});
-  const mapRef = useRef(null); // use ref!!!!!
 
-  useEffect(() => {
-    localStorage.setItem("reports", JSON.stringify(reports));
-  }, [reports]);
+  const mapRef = useRef(null);
 
+  // Function to update visible reports
   const updateVisibleReports = () => {
     const mapInstance = mapRef.current;
-    if (!mapInstance) return;
+    if (!mapInstance) {
+      console.log('mapInstance is null');
+      return;
+    }
 
+    console.log('reports:', reports);
     const bounds = mapInstance.getBounds();
     const visible = reports.filter((report) => {
       const { lat, lng } = report.geocode || {};
-      return lat != null && lng != null && bounds.contains([lat, lng]);
+
+      // Validate that lat and lng are valid numbers
+      if (lat == null || lng == null || isNaN(lat) || isNaN(lng)) {
+        return false;
+      }
+
+      // Ensure lat and lng are within valid ranges
+      if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+        return false;
+      }
+
+      return bounds.contains([lat, lng]);
     });
 
-    console.log("Updated visible reports based on bounds:", visible); // for debugging ok to be deleted
+    console.log('visible reports:', visible);
     setVisibleReports(visible);
   };
 
@@ -66,6 +77,12 @@ function App() {
 
     return () => clearInterval(interval); // remove when map is mounted
   }, [mapRef, reports]);
+
+  // Update visible reports when reports change and update in localstorage
+  useEffect(() => {
+    localStorage.setItem("reports", JSON.stringify(reports));
+    updateVisibleReports();
+  }, [reports]);
 
   // Update handleMapClick to perform reverse geocoding
   const handleMapClick = async (markerPoint) => {
@@ -102,8 +119,6 @@ function App() {
     }
   };
 
-  // App.jsx
-
   const handleFormSubmit = (formData, updatedMarkerPoint = null) => {
     const markerPointToUse = updatedMarkerPoint || tempMarkerPoint;
 
@@ -127,8 +142,6 @@ function App() {
     setFocusedID(newReport.id);
     setTempMarkerPoint(null);
     setShowForm(false);
-
-    updateVisibleReports();
   };
 
   const handleResolve = (reportId) => {
@@ -188,8 +201,6 @@ function App() {
 
       <div id="table">
         {/* ReportTable Component */}
-        {/* This component is used to display a table view of the reports that are visible on the map */}
-        {/* It also allows sorting, selecting, modifying, and resolving reports */}
         <ReportTable
           reports={visibleReports} // Pass the reports that are visible in the current map bounds
           focusedID={focusedID} // Pass the currently focused report ID to highlight it

@@ -32,7 +32,6 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
     emergencyType: "",
     address: addressName ? addressName : "",
     placeName: placeName,
-    postCode: tempAddress.address.postcode ? tempAddress.address.postcode : "",
     pictureUrl: "",
     comments: "",
     geo: {
@@ -123,15 +122,6 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
               type="text"
               name="placeName"
               value={formData.placeName}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Postal Code
-            <input
-              type="text"
-              name="placeName"
-              value={formData.postCode}
               onChange={handleChange}
             />
           </label>
