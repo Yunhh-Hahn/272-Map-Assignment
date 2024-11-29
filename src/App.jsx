@@ -19,6 +19,7 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [tempMarkerPoint, setTempMarkerPoint] = useState(null);
   const [tempAddress, setTempAddress] = useState({});
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const mapRef = useRef(null);
 
@@ -26,11 +27,11 @@ function App() {
   const updateVisibleReports = () => {
     const mapInstance = mapRef.current;
     if (!mapInstance) {
-      console.log('mapInstance is null');
+      console.log("mapInstance is null");
       return;
     }
 
-    console.log('reports:', reports);
+    console.log("reports:", reports);
     const bounds = mapInstance.getBounds();
     const visible = reports.filter((report) => {
       const { lat, lng } = report.geocode || {};
@@ -48,35 +49,27 @@ function App() {
       return bounds.contains([lat, lng]);
     });
 
-    console.log('visible reports:', visible);
+    console.log("visible reports:", visible);
     setVisibleReports(visible);
   };
 
   useEffect(() => {
-    const checkMapInstance = () => {
-      const mapInstance = mapRef.current;
-      if (!mapInstance) return;
-      updateVisibleReports();
+    const mapInstance = mapRef.current;
+    if (!mapInstance) {
+      console.log("mapInstance is null in useEffect");
+      return;
+    }
 
-      mapInstance.on("moveend", updateVisibleReports);
-      mapInstance.on("zoomend", updateVisibleReports);
+    mapInstance.on("moveend", updateVisibleReports);
+    mapInstance.on("zoomend", updateVisibleReports);
 
-      return () => {
-        mapInstance.off("moveend", updateVisibleReports);
-        mapInstance.off("zoomend", updateVisibleReports);
-      };
+    updateVisibleReports();
+
+    return () => {
+      mapInstance.off("moveend", updateVisibleReports);
+      mapInstance.off("zoomend", updateVisibleReports);
     };
-
-    // Check if mapRef.current is available, rerun until map mounts
-    const interval = setInterval(() => {
-      if (mapRef.current) {
-        clearInterval(interval);
-        checkMapInstance();
-      }
-    }, 50);
-
-    return () => clearInterval(interval); // remove when map is mounted
-  }, [mapRef, reports]);
+  }, [reports, mapLoaded]);
 
   // Update visible reports when reports change and update in localstorage
   useEffect(() => {
@@ -172,6 +165,7 @@ function App() {
           minZoom={10}
           maxZoom={18}
           ref={mapRef}
+          whenReady={() => setMapLoaded(true)}
         >
           <TileLayer
             attribution="&copy; OpenStreetMap contributors"
