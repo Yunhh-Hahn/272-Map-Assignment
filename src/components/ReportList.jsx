@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import propTypes from "prop-types";
-import { SECRET_PASSWORD } from "../assets/constants";
+import { SECRET_PASSWORD } from "../lib/constants";
 import md5 from "md5";
 
 function ReportList({

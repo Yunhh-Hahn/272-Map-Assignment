@@ -10,4 +10,4 @@ Currently, two official plugins are available:
 ### How To Run
 1. npm i 
 2. npm run dev
-3. pass is `MuMeLeLe`
+3. pass is `1234`, provided and changeable in src/lib/constants.js
