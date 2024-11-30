@@ -16,7 +16,8 @@ Currently, two official plugins are available:
 ### Report
 
 1. Contribution (All group member equally contributed; 20% each)
-- Wonchan Kim:
+   - Wonchan Kim:
+  
       1) Report List Implementation:
       Created ReportList.jsx to allow users to view the list of the reports.
       
@@ -26,7 +27,7 @@ Currently, two official plugins are available:
         - Implemented Resolve/View Comment feature
         - Sorting by different Criteria implementation
     
--  Kazi Boni Amin: 
+   -  Kazi Boni Amin: 
       1) Report Form Implementation
       Created ReportForm.jsx to allow users to submit emergency reports with all required details.
       Auto-filled Time/Date and Status fields upon submission.
@@ -44,20 +45,23 @@ Currently, two official plugins are available:
       Provided error messages for invalid inputs and incorrect passcodes.
       Handled geocoding errors during address suggestions and for map marker repositioning when the report was edited.
   
-- Philip Ho
+   - Philip Ho
+  
       1) Implemented Local Storage
       2) Implemented reverse affress lookup via geocode
       3) Style map popup
       4) Repository Managing & Debugging
       5) Code review & Refinement
       
-- Nathan 
+   - Nathan 
+  
       1) Set up the foundatino for the project
       2) Implemented basic map function using API
       3) Created template for the popup
       4) Debugging for testing purpose & Code Refinement
    
-- Chaitanya Mittal
+   - Chaitanya Mittal
+  
       1) Contributed styling overall
       2) Contribute in implementing the modifying button on the table
       3) Implemented password feature using MD5
