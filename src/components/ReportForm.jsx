@@ -56,8 +56,8 @@ function ReportForm({ tempAddress, onSubmit, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("tempAddress:", tempAddress); // tempAddress 확인
-    console.log("formData:", formData); // formData 확인
+    console.log("tempAddress:", tempAddress); 
+    console.log("formData:", formData); 
 
     if (isValidForm()) {
       onSubmit(formData);
